@@ -1,2 +1,2 @@
-# joy-yi0905.github.io
-joy-yi0905's github blog
+# canvas-image-filter
+一个用canvas将图片处理成各种滤镜效果的应用，它可以把图片效果设置为反相、灰化、复古、变亮、阈值、模糊、浮雕、反转等效果！设置了这些效果后，可直接保存图片！
