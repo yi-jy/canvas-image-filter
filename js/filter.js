@@ -1,21 +1,25 @@
-﻿;~function(){
+﻿;~function(sampleImgPath){
 
     var canvas = document.getElementById("canvas");
         ctx = canvas.getContext("2d"),
         tempImageData = null,
         imgData = null;
 
-    var filterInput = document.querySelectorAll(".filter-handle input")
-        invertInput = document.getElementById("invert"),
-        grayscaleInput = document.getElementById("grayscale"),
-        sepiaInput = document.getElementById("sepia"),
-        brightnessInput = document.getElementById("brightness"),
-        thresholdInput = document.getElementById("threshold"),
-        blurInput = document.getElementById("blur"),
-        blurValInput = document.getElementById("blur-val"),
-        reliefInput = document.getElementById("relief"),
-        reverseInput = document.getElementById("reverse"),
-        imgUpload = document.getElementById("img-upload");  
+    var filterInput = document.querySelectorAll(".filter-handle input"),
+        invertInput = getId("invert"),
+        grayscaleInput = getId("grayscale"),
+        sepiaInput = getId("sepia"),
+        brightnessInput = getId("brightness"),
+        thresholdInput = getId("threshold"),
+        blurInput = getId("blur"),
+        blurValInput = getId("blur-val"),
+        reliefInput = getId("relief"),
+        reverseInput = getId("reverse"),
+        imgUpload = getId("img-upload");
+
+    function getId(id) {
+        return document.getElementById(id);
+    }
 
     function getInitImageData(ele) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -83,8 +87,9 @@
     };
 
     var handleFilter = {
+
         // 反相：取每个像素点与255的差值
-        invert: function() { 
+        invert: function() {
             if (invertInput.checked) {
                 for (var i = 0, len = imgData.length; i < len; i+=4) {
                     canvasFilter.invert(imgData, i);
@@ -92,6 +97,7 @@
                 ctx.putImageData(tempImageData, 0, 0);
             }
         },
+
         // 灰化：取某个点的rgb的平均值
         grayscale: function() {
             if (grayscaleInput.checked) {
@@ -101,6 +107,7 @@
                 ctx.putImageData( tempImageData , 0 , 0);
             }
         },
+
         // 怀旧：特定公式
         sepia: function() {
             if (sepiaInput.checked) {
@@ -110,6 +117,7 @@
                 ctx.putImageData( tempImageData , 0 , 0);
             }
         },
+
         // 变亮：rgb点加上某个数值
         brightness: function() {
             if (brightnessInput.checked) {
@@ -119,6 +127,7 @@
                 ctx.putImageData( tempImageData , 0 , 0);
             }
         },
+
         // 阈值：将灰度值与设定的阈值比较，如果大于等于阈值，则将该点设置为255，否则设置为0
         //“阈值”命令将灰度或彩色图像转换为高对比度的黑白图像。您可以指定某个色阶作为阈值。所有比阈值亮的像素转换为白色；而所有比阈值暗的像素转换为黑色。“阈值”命令对确定图像的最亮和最暗区域很有用。
         threshold: function() {
@@ -129,15 +138,17 @@
                 ctx.putImageData(tempImageData, 0, 0);
             }
         },
+
         // 浮雕：取下一个点和下一行对应的点值
         relief: function() {
             if (reliefInput.checked) {
                 for (var i = 0, len = imgData.length; i < len; i++) {
-                    canvasFilter.relief(imgData , i , canvas);   
+                    canvasFilter.relief(imgData , i , canvas);
                 }
                 ctx.putImageData( tempImageData , 0 , 0);
             }
         },
+
         // 反转
         reverse: function() {
             var tempArr = [];
@@ -149,18 +160,19 @@
                         tempArr[m + 1 - (n*canvas.width*4)] = imgData[m + 1];
                         tempArr[m + 2 - (n*canvas.width*4)] = imgData[m + 2];
                         tempArr[m + 3 - (n*canvas.width*4)] = imgData[m + 3];
-                    } 
+                    }
                     for (var m = n*canvas.width*4; m < (n+1)*canvas.width*4; m+=4) {
                         imgData[m] = tempArr[ tempArr.length - 1 - (m + 3 - (n*canvas.width*4))];
                         imgData[m + 1] = tempArr[ tempArr.length - 1 - (m + 2 - (n*canvas.width*4))];
                         imgData[m + 2] = tempArr[ tempArr.length - 1 - (m + 1 - (n*canvas.width*4))];
                         // imgData[m + 3] = tempArr[ tempArr.length - 1 - (m - (n*canvas.width*4))];
                         // 透明度无需计算，默认都为255
-                    } 
+                    }
                 }
                 ctx.putImageData( tempImageData , 0 , 0);
             }
         },
+
         // 模糊 stackblur
         blur: function() {
             blurValInput.removeAttribute('disabled');
@@ -184,26 +196,31 @@
     invertInput.addEventListener('click', handleFilter.invert, false);
     grayscaleInput.addEventListener('click', handleFilter.grayscale, false);
     sepiaInput.addEventListener('click', handleFilter.sepia, false);
+    brightnessInput.addEventListener('click', handleFilter.brightness, false);
     thresholdInput.addEventListener('click', handleFilter.threshold, false);
     reliefInput.addEventListener('click', handleFilter.relief, false);
     reverseInput.addEventListener('click', handleFilter.reverse, false);
     blurInput.addEventListener("click", handleFilter.blur, false);
+
     blurValInput.addEventListener("change", handleFilter.blur, false);
 
     function uploadImg(file) {
         if (file.files && file.files[0]) {
-            var handleImg = document.createElement('img'),
+            var handleImg = new Image(),
                 reader = new FileReader();
-            handleImg.addEventListener('load', function() {
-                getInitImageData();
-                // alert(handleImg.getAttribute('src'));
-            }, false);
+
             reader.addEventListener('load', function(evt) {
                 handleImg.src = evt.target.result;
                 img.src = handleImg.src;
-                canvas.width = img.width;
-                canvas.height = img.height;
+
+                 handleImg.addEventListener('load', function() {
+                    getInitImageData();
+
+                    canvas.width = handleImg.width;
+                    canvas.height = handleImg.height;
+                }, false);
             }, false);
+
             reader.readAsDataURL(file.files[0]);
         }
     }
@@ -219,6 +236,6 @@
         getInitImageData();
     }, false);
 
-    img.src = 'sample.jpg';
+    img.src = sampleImgPath;
 
-}();
+}('sample.jpg');

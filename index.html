@@ -26,7 +26,7 @@ body{margin:0;padding:0;}
 
         <label>
             <input type="radio" name="filter" id="sepia">复古(怀旧)
-        </label> 
+        </label>
 
         <label>
             <input type="radio" name="filter" id="brightness">变亮
@@ -42,10 +42,10 @@ body{margin:0;padding:0;}
 
         <label>
             <input type="radio" name="filter" id="reverse">反转
-        </label>  
+        </label>
 
         <label>
-            <input type="radio" name="filter" id="blur"> 
+            <input type="radio" name="filter" id="blur">
             <select name="" id="blur-val">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -58,13 +58,13 @@ body{margin:0;padding:0;}
                 <option value="9">9</option>
                 <option value="10">10</option>
             </select> 模糊
-        </label> 
+        </label>
     </div>
     <div class="canvas-box">
         <canvas id="canvas" width="500" height="140" >您的浏览器不支持canvas，请换成chrome或者Firefox</canvas>
     </div>
     <div class="filter-tips">
-        <input type="file" id="img-upload"/>
+        <input type="file" id="img-upload" accept="image/*" />
         <p>提示：请先上传图片，设置图片效果后，可直接右键保存！若你想使用原图，刷新页面即可！</p>
     </div>
 
@@ -74,5 +74,4 @@ body{margin:0;padding:0;}
 
 </body>
 </html>
-
 
